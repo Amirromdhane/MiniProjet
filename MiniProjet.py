@@ -40,6 +40,8 @@ def afficherGraphe():
         labels[node] = str(node)
 
     nx.draw_networkx_labels(Graphe,node_position,labels,font_size=18)
+    edge_labels=dict([((u,v,),d['weight']) for u,v,d in Graphe.edges(data=True)])
+    nx.draw_networkx_edge_labels(Graphe,node_position,edge_labels=edge_labels)
 
     # display
     plt.axis('off') #on cache la grille de coordonnées
@@ -50,15 +52,45 @@ def ajouterProcessus(processus):
     
     
 def demanderRessource(processus, ressource):
-    Graphe.add_edge(processus, ressource, weight=0)
+    if estBloque(processus):
+        print("Processus bloqué vous pouvez pas demander des ressources")
+    else:
+        Graphe.add_edge(processus, ressource, weight=len(Graphe.predecessors(ressource)))
     
-    
+def libererRessource(processus, ressource):
+    if estBloque(processus):
+        print("Processus bloqué vous pouvez pas libérer des ressources")
+    else:
+        if Graphe.number_of_edges(processus,ressource)==0 :
+            print("Le processus ",processus," n'utilise pas la ressource ",ressource)
+        else:
+            Graphe.remove_edge(processus,ressource)
+            for i in Graphe.predecessors(ressource):
+                Graphe[i][ressource]['weight']-=1
+                  
+def estBloque(processus):
+   for i in Graphe.successors(processus):
+       if Graphe[processus][i]['weight']!=0:
+           return True
+   return False
+                    
 # MAIN
 
 ajouterProcessus('P1')
-
+ajouterProcessus('P2')
 demanderRessource('P1', 'R1')
-
+demanderRessource('P2', 'R1')
+if estBloque('P2'):
+    print ("P2 bloqué")
+else:
+    print("P2 non bloqué")
+if estBloque('P1'):
+    print ("P1 bloqué")
+else:
+    print("P1 non bloqué")
+libererRessource('P1', 'R1')
+libererRessource('P2', 'R1')
+libererRessource('P1', 'R1')
 afficherGraphe()
 
 
