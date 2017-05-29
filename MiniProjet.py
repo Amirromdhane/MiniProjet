@@ -78,6 +78,12 @@ def libererRessource(processus, ressource):
                 if Graphe[i][ressource]['weight'] > Graphe[processus][ressource]['weight']:
                     Graphe[i][ressource]['weight']-=1
             Graphe.remove_edge(processus,ressource)
+            for j in Graphe.predecessors(ressource):
+                if Graphe[j][processus]['weight']==-1:
+                    Graphe.remove_edge(j,processus)
+                else:
+                    Graphe[j][processus]['weight']+=1
+                      
                   
 def estBloque(processus):
    for i in Graphe.successors(processus):
@@ -92,6 +98,7 @@ def detruirePrcessus(processus):
                 if Graphe[j][i]['weight'] > Graphe[processus][i]['weight']:
                     Graphe[j][i]['weight']-=1
         Graphe.remove_edge(processus,i)
+    Graphe.remove_node(processus)
         
          
 def listeAttente(ressources):
@@ -107,14 +114,33 @@ def listeActif():
     resultat=[x for x in resultat if estBloque(x)==False]
     return resultat
 
+def interblocage():
+    print(list(nx.simple_cycles(Graphe)))
+
+
+
 # MAIN
 
+choix=-1
+while choix!=9:
+    print("1:Creation d’un processus")
+    print("2:Destruction d’un processus ")
+    print("3:Demande de ressource(s) par un processu")
+    print("4:Liberation d’une ressource par un processus")
+    print("5:Affichhage des ﬁles d’attente par ressource")
+    print("6:Affichage des processus actifs ")
+    print("7:Affichage des attentes entre processus")
+    print("8:Affichage des processus concernes par un interblocage ")
+    print("9:Quitter")
+    
+    
+    
+    
 ajouterProcessus('P1')
 ajouterProcessus('P2')
 ajouterProcessus('P3')
 demanderRessource('P1', 'R1')
 demanderRessource('P2', 'R1')
-demanderRessource('P3', 'R1')
 """
 if estBloque('P2'):
     print ("P2 bloqué")
@@ -130,6 +156,10 @@ libererRessource('P2', 'R1')
 libererRessource('P1', 'R1')
 print(listeAttente('R1'))
 print(listeActif())
+demanderRessource('P3','R2')
+demanderRessource('P2','R2')
+demanderRessource('P3', 'R1')
+interblocage()
 afficherGraphe()
 
 
