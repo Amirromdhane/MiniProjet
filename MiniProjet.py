@@ -49,11 +49,15 @@ def afficherGraphe():
     plt.axis('off') #on cache la grille de coordonnées
     plt.show() #commande d'affichage
     
-def ajouterProcessus(processus):
+def ajouterProcessus():
+    processus=input("Entrez le nom du processus : ")
     Graphe.add_node(processus)
     
     
-def demanderRessource(processus, ressource):
+def demanderRessource(ressource):
+    processus=input("Entrez le nom du processus : ")
+    ressource=input("Entrez le nom du ressource : ")
+    
     if estBloque(processus):
         print("Processus bloqué vous pouvez pas demander des ressources")
     else:
@@ -67,7 +71,9 @@ def demanderRessource(processus, ressource):
         # On fini par ajouter notre arc entre le processus et la ressource        
         Graphe.add_edge(processus, ressource, weight=Poids)
     
-def libererRessource(processus, ressource):
+def libererRessource():
+    processus=input("Entrez le nom du processus : ")
+    ressource=input("Entrez le nom du ressource : ")
     if estBloque(processus):
         print("Processus bloqué vous pouvez pas libérer des ressources")
     else:
@@ -91,7 +97,8 @@ def estBloque(processus):
            return True
    return False
 
-def detruirePrcessus(processus):
+def detruirePrcessus():
+    processus=input("Entrez le nom du processus : ")
     for i in Graphe.successors(processus):
         if Graphe[processus][i]['weight']>=0:
             for j in Graphe.predecessors(i):
@@ -101,8 +108,9 @@ def detruirePrcessus(processus):
     Graphe.remove_node(processus)
         
          
-def listeAttente(ressources):
-    return Graphe.predecessors(ressources)
+def listeAttente():
+    ressource=input("Entrez le nom du ressource : ")
+    return Graphe.predecessors(ressource)
             
 def listeProcessus():
     resultat=Graphe.nodes()
@@ -115,33 +123,57 @@ def listeActif():
     return resultat
 
 def interblocage():
-    print(list(nx.simple_cycles(Graphe)))
+    return(list(nx.simple_cycles(Graphe)))
 
 
+def bloqueurs():
+    processus=input("Entrez le nom du processus : ")
+    resultat=listeProcessus()
+    resultat=[x for x in resultat if Graphe.has_edge(processus,x)]
 
 # MAIN
 
 choix=-1
-while choix!=9:
-    print("1:Creation d’un processus")
-    print("2:Destruction d’un processus ")
-    print("3:Demande de ressource(s) par un processu")
-    print("4:Liberation d’une ressource par un processus")
-    print("5:Affichhage des ﬁles d’attente par ressource")
-    print("6:Affichage des processus actifs ")
-    print("7:Affichage des attentes entre processus")
-    print("8:Affichage des processus concernes par un interblocage ")
-    print("9:Quitter")
+fichier1=open("data1.txt","rt").read()
+fichier2=open("data2.txt","rt").read()
+
+while choix !='0' :
+    if len(interblocage())==0 :
+        print (fichier1)
+        choix=input("Choissisez une commande : ")
+        options = {'0' : exit(),
+           '1' : ajouterProcessus(),
+           '2' : detruirePrcessus(),
+           '3' : demanderRessource(),
+           '4' : libererRessource(),
+           '5' : listeAttente(),
+           '6' : listeActif(),
+           '7' : bloqueurs(),
+           '8' : print(interblocage()),
+           }
+    else:
+        print (fichier2)
+        choix=input("Choissisez une commande : ")
+        options = {'0' : exit(),
+           '1' : detruirePrcessus(),
+           '2' : listeAttente(),
+           '3' : listeActif(),
+           '4' : listeAttente(),
+           '5' : print(interblocage()),
+           }
+    
+   
+
+    
+""" 
     
     
-    
-    
-ajouterProcessus('P1')
-ajouterProcessus('P2')
-ajouterProcessus('P3')
+ajouterProcessus()
+ajouterProcessus()
+ajouterProcessus()
 demanderRessource('P1', 'R1')
 demanderRessource('P2', 'R1')
-"""
+
 if estBloque('P2'):
     print ("P2 bloqué")
 else:
@@ -152,7 +184,7 @@ else:
     print("P1 non bloqué")
 libererRessource('P1', 'R1')
 libererRessource('P2', 'R1')
-"""
+
 libererRessource('P1', 'R1')
 print(listeAttente('R1'))
 print(listeActif())
@@ -164,4 +196,4 @@ afficherGraphe()
 
 
 
-
+"""
