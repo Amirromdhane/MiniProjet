@@ -103,8 +103,8 @@ else:
     print("P1 non bloqué")
 libererRessource('P1', 'R1')
 libererRessource('P2', 'R1')
-libererRessource('P1', 'R1')
 """
+libererRessource('P1', 'R1')
 afficherGraphe()
 
 
