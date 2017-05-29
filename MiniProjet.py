@@ -81,7 +81,7 @@ def libererRessource(processus, ressource):
                   
 def estBloque(processus):
    for i in Graphe.successors(processus):
-       if Graphe[processus][i]['weight']!=0:
+       if Graphe[processus][i]['weight']>0:
            return True
    return False
 
@@ -94,9 +94,19 @@ def detruirePrcessus(processus):
         Graphe.remove_edge(processus,i)
         
          
-                
+def listeAttente(ressources):
+    return Graphe.predecessors(ressources)
             
-        
+def listeProcessus():
+    resultat=Graphe.nodes()
+    resultat=[x for x in resultat if x not in Ressources]
+    return resultat
+
+def listeActif():
+    resultat=listeProcessus()
+    resultat=[x for x in resultat if estBloque(x)==False]
+    return resultat
+
 # MAIN
 
 ajouterProcessus('P1')
@@ -118,6 +128,8 @@ libererRessource('P1', 'R1')
 libererRessource('P2', 'R1')
 """
 libererRessource('P1', 'R1')
+print(listeAttente('R1'))
+print(listeActif())
 afficherGraphe()
 
 
