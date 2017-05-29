@@ -74,16 +74,29 @@ def libererRessource(processus, ressource):
         if Graphe.number_of_edges(processus,ressource)==0 :
             print("Le processus ",processus," n'utilise pas la ressource ",ressource)
         else:
-            Graphe.remove_edge(processus,ressource)
             for i in Graphe.predecessors(ressource):
-                Graphe[i][ressource]['weight']-=1
+                if Graphe[i][ressource]['weight'] > Graphe[processus][ressource]['weight']:
+                    Graphe[i][ressource]['weight']-=1
+            Graphe.remove_edge(processus,ressource)
                   
 def estBloque(processus):
    for i in Graphe.successors(processus):
        if Graphe[processus][i]['weight']!=0:
            return True
    return False
-                    
+
+def detruirePrcessus(processus):
+    for i in Graphe.successors(processus):
+        if Graphe[processus][i]['weight']>=0:
+            for j in Graphe.predecessors(i):
+                if Graphe[j][i]['weight'] > Graphe[processus][i]['weight']:
+                    Graphe[j][i]['weight']-=1
+        Graphe.remove_edge(processus,i)
+        
+         
+                
+            
+        
 # MAIN
 
 ajouterProcessus('P1')
