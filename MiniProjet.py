@@ -21,7 +21,7 @@ Graphe.add_nodes_from(Ressources)
                     
 def afficherGraphe():
     #Définition du mode d'affichage du graphe (spectral ou spring)
-    node_position = nx.spring_layout(Graphe)     
+    node_position = nx.spring_layout(Graphe,k=1,iterations=100)     
     
     # nodes
     nx.draw_networkx_nodes(Graphe,node_position,
@@ -40,6 +40,8 @@ def afficherGraphe():
         labels[node] = str(node)
 
     nx.draw_networkx_labels(Graphe,node_position,labels,font_size=18)
+    
+    # weights
     edge_labels=dict([((u,v,),d['weight']) for u,v,d in Graphe.edges(data=True)])
     nx.draw_networkx_edge_labels(Graphe,node_position,edge_labels=edge_labels)
 
@@ -55,7 +57,15 @@ def demanderRessource(processus, ressource):
     if estBloque(processus):
         print("Processus bloqué vous pouvez pas demander des ressources")
     else:
-        Graphe.add_edge(processus, ressource, weight=len(Graphe.predecessors(ressource)))
+        # On calcule le poids de l'arc à créer entre le processus et la ressource
+        Poids = len(Graphe.predecessors(ressource))     
+        # Si le poids > 0 celà veut dire que le processus est bloqué par un ou plusieurs autres processus
+        if Poids>0 :
+            for i in Graphe.predecessors(ressource) :
+                # On ajoute donc des arcs entre ces processus de poids -1 pour les différencier plus facilement
+                Graphe.add_edge(processus, i, weight=-1)
+        # On fini par ajouter notre arc entre le processus et la ressource        
+        Graphe.add_edge(processus, ressource, weight=Poids)
     
 def libererRessource(processus, ressource):
     if estBloque(processus):
@@ -91,8 +101,11 @@ def detruirePrcessus(processus):
 
 ajouterProcessus('P1')
 ajouterProcessus('P2')
+ajouterProcessus('P3')
 demanderRessource('P1', 'R1')
 demanderRessource('P2', 'R1')
+demanderRessource('P3', 'R1')
+"""
 if estBloque('P2'):
     print ("P2 bloqué")
 else:
@@ -104,6 +117,7 @@ else:
 libererRessource('P1', 'R1')
 libererRessource('P2', 'R1')
 libererRessource('P1', 'R1')
+"""
 afficherGraphe()
 
 
