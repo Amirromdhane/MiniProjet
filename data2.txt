@@ -1,7 +1,10 @@
 
+!Attention présence d'interblocage!
+
 1:Destruction d’un processus 
 2:Affichhage des listes d’attente par ressource
 3:Affichage des processus actifs
 4:Affichage des attentes entre processus
 5:Affichage des processus concernes par un interblocage
+6:Affichage du graphe
 0:Quitter

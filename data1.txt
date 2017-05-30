@@ -3,8 +3,9 @@
 2:Destruction d’un processus
 3:Demande de ressource(s) par un processus
 4:Liberation d’une ressource par un processus
-5:Affichhage des listes d’attente par ressource
+5:Affichage des listes d’attente par ressource
 6:Affichage des processus actifs
 7:Affichage des attentes entre processus
 8:Affichage des processus concernes par un interblocage
+9:Affichage du graphe
 0:Quitter
