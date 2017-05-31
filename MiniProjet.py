@@ -7,7 +7,7 @@ Object : MINI PROJECT - BASIC RESSOURCES ALLOCATOR
 @author: BOUREAU Louis
          ROMDHANE Amir
 """
-
+import collections
 import matplotlib.pyplot as plt
 import networkx as nx
 
@@ -85,12 +85,15 @@ def demanderRessource():
     processus=input("Entrez le nom du processus : ")
     if not Graphe.has_node(processus):
         Graphe.add_node(processus)
-    ListeRessource=input("Entrez la liste des nom des ressources : ").split()
-    if estBloque(processus):
-        print("Processus bloqué vous pouvez pas demander des ressources")
+    if processus in Ressources:
+        print("Vous pouvez pas attribuez une ressource à une autre")
     else:
-        for i in ListeRessource :
-            attribuerRessource(processus, i)
+        ListeRessource=input("Entrez la liste des nom des ressources : ").split()
+        if estBloque(processus):
+            print("Processus bloqué vous pouvez pas demander des ressources")
+        else:
+            for i in ListeRessource :
+                attribuerRessource(processus, i)
                
         
         
@@ -175,11 +178,33 @@ def detect_interblocage():
     resultat=[]
     for i in listeProcessus():
         for j in listeProcessus():
-            if nx.has_path(Graphe,i,j) and nx.has_path(Graphe,j,i) and j!=i:
-                resultat.extend([i,j])
+            if existe_chemin(i,j) and existe_chemin(j,i) and j!=i:
+                if (not i in resultat):
+                    resultat.extend([i])
+                if (not j in resultat):
+                    resultat.extend([j])
     return resultat
 
-
+def existe_chemin(a,b):
+    visite=set()
+    Q=collections.deque()
+    visite.add(a)
+    Q.append(a)
+    while(len(Q)>0):
+        courant=Q.pop()
+        if courant==b:
+            return True
+        for i in Graphe.successors(courant):
+            if not i in visite:
+                visite.add(i)
+                Q.append(i)
+    return False
+                
+    
+    
+    
+    
+        
 
 # MAIN
 
